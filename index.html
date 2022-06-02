@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex</title>
+  </head>
+  <body x-data class="body" :class="{ 'modal-active' : $store.pokemon_list.current}">
+    <header class="site-header">
+      <div class="container h-100">
+        <div class="row h-100">
+          <div class="col col-12 h-100 position-relative d-flex justify-content-center align-items-center">
+            <div class="site-logo-wrapper">
+              <img class="site-logo" src="./assets/logos/pokemon_logo.svg"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="site-main">
+      <div class="container">
+        <section x-data class="row">
+          <template x-for="pokemon in $store.pokemon_list.pokemon">
+            <div class="col col-6 col-md-4 col-lg-3 text-center">
+              <button @click="$store.pokemon_list.setCurrent(pokemon.id)" class="d-flex flex-column justify-content-center align-items-center mb-3 w-100 pokemon-button">
+                <img x-bind:src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`" />
+                <h3 x-text="pokemon.data.name" class="pokemon-name"></h3>
+              </button>
+            </div>
+          </template>
+        </section>
+      </div>
+    </main>
+    <div x-show="$store.pokemon_list.current !== null" class="modal-overlay">
+      <template x-if="$store.pokemon_list.current">
+        <div class="container">
+          <div class="pt-5 position-relative modal-container">
+            <button class="modal-close" @click="$store.pokemon_list.current = null" x-trap="$store.pokemon_list.current">
+              <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 50 50" width="50px" height="50px"><path d="M 9.15625 6.3125 L 6.3125 9.15625 L 22.15625 25 L 6.21875 40.96875 L 9.03125 43.78125 L 25 27.84375 L 40.9375 43.78125 L 43.78125 40.9375 L 27.84375 25 L 43.6875 9.15625 L 40.84375 6.3125 L 25 22.15625 Z"/></svg>
+            </button>
+            <div class="container">
+              <div class="row">
+                <div class="col col-12">
+                  <h3 x-text="$store.pokemon_list.current.name" class="pokemon-name"></h3>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col col-12 col-lg-6">
+                  <img x-bind:src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${$store.pokemon_list.current.id}.png`" />
+                  <div class="row">
+                    <div class="col col-12 mb-3">
+                      <h5>Types</h5>
+                      <template x-for="(type, idx) in $store.pokemon_list.current.types">
+                        <span class="pokemon-type" x-text="type.type.name"></span>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+                <div class="col col-12 col-lg-6">
+                  <h5>Stats</h5>
+                  <ul>
+                    <template x-for="stat in $store.pokemon_list.current.stats">
+                      <li>
+                        <span class="fw-bold"><span x-text="stat.stat.name"></span>:</span>
+                        <span x-text="stat.base_stat"></span>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
